@@ -3,6 +3,13 @@
    hosts: '{{ host }}'
    become: true
    tasks: 
+    - name: Install sudo
+      ansible.builtin.apt:
+        name: sudo
+        update_cache: yes
+      timeout: 300
+      retries: 3
+      
     - name: Install GIT
       apt:
         name: git
