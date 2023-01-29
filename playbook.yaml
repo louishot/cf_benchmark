@@ -33,8 +33,9 @@
 
     - name: pull cf_benchmark_results.csv
       ansible.builtin.fetch:  
-        src: /tmp/lptmp/cf_benchmark_results.csv
-        dest: cf_benchmark_results
+        src: /tmp/lptmp/cf_benchmark/cf_benchmark_results.csv
+        dest: cf_benchmark_results/{{ inventory_hostname }}.csv
+        flat: yes
       timeout: 300
       retries: 3
 
