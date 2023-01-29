@@ -9,6 +9,7 @@ fi
 echo $out
 
 nprocs=`cat /proc/cpuinfo | awk '/^processor/{print $3}' | wc -l`
+cpu_name=`cat /proc/cpuinfo | grep 'model name' | head -1 | cut -d: -f2`
 
 if [ -x /usr/bin/apt-get ] || [ -x /usr/bin/apt ]; then
        sudo apt-get install -y build-essential bc golang
@@ -61,7 +62,7 @@ comp () {
 }
 
 
-echo benchmark,1 core,$nprocs cores | tee $out
+echo benchmark,1 core,$nprocs cores - $cpu_name | tee $out
 
 echo openssl pki performance | tee -a $out
 for sig in ecdsap256 rsa2048 rsa3072; do
