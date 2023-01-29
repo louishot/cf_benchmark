@@ -37,12 +37,6 @@ if [ ! -f ./bench ]; then
 fi
 cd ..
 
-# Build lua bench
-cd bench_lua
-if [ ! -f ./bench ]; then
-	make
-fi
-cd ..
 
 
 openssl_aead () {
@@ -66,10 +60,6 @@ comp () {
 	echo $res MiB/s
 }
 
-lua () {
-	res=`./bench_lua/bench -c $2 ./bench_lua/$1 | tail -1 | cut -f 2 -d' '`
-	echo $res ops/s
-}
 
 echo benchmark,1 core,$nprocs cores | tee $out
 
@@ -88,10 +78,6 @@ for aead in aes-128-gcm aes-256-gcm chacha20-poly1305; do
 	echo $aead,$( openssl_aead $aead 1 ), $( openssl_aead $aead $nprocs ) | tee -a $out
 done
 
-echo "LuaJIT performance" | tee -a $out
-for f in binary_trees.lua fasta.lua  fibonacci.lua mandelbrot.lua  n_body.lua  spectral.lua; do
-	echo lua $f,$( lua $f 1 ),$( lua $f $nprocs ) | tee -a $out
-done
 
 echo "brotli performance" | tee -a $out
 for q in {4..11}; do
