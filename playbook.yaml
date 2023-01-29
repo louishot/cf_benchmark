@@ -1,0 +1,40 @@
+---
+ - name: Install GIT
+   hosts: '{{ host }}'
+   become: true
+   tasks: 
+    - name: Install GIT
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+      timeout: 300
+      retries: 3
+
+    - name: download cf_benchmark
+      shell:  |
+        work_dir=/tmp/lptmp
+        rm -rf $work_dir
+        mkdir -p $work_dir
+        cd $work_dir
+        git clone https://github.com/louishot/cf_benchmark.git
+        cd $work_dir/cf_benchmark
+        chmod +x run_benchmarks.sh
+      timeout: 300
+      retries: 3
+
+    - name: exec cf_benchmark
+      shell:  |
+        work_dir=/tmp/lptmp
+        cd $work_dir/cf_benchmark
+        ./run_benchmarks.sh cf_benchmark_results.csv
+      timeout: 3600
+      retries: 3
+
+    - name: pull cf_benchmark_results.csv
+      ansible.builtin.fetch:  
+        src: /tmp/lptmp/cf_benchmark_results.csv
+        dest: cf_benchmark_results
+      timeout: 300
+      retries: 3
+
