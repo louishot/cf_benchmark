@@ -62,9 +62,9 @@ comp () {
 }
 
 
-echo benchmark,1 core,$nprocs cores - $cpu_name | tee $out
+echo \#benchmark,1 core,$nprocs cores - $cpu_name | tee $out
 
-echo openssl pki performance | tee -a $out
+echo \#openssl pki performance | tee -a $out
 for sig in ecdsap256 rsa2048 rsa3072; do
 	echo $sig Sign,$( openssl_sign $sig 1), $( openssl_sign $sig $nprocs) | tee -a $out
 	echo $sig Verify,$( openssl_verify $sig 1), $( openssl_verify $sig $nprocs) | tee -a $out
@@ -74,21 +74,21 @@ for kx in ecdhp256 ecdhx25519; do
 	echo $kx Key-Exchange,$( openssl_verify $kx 1), $( openssl_verify $kx $nprocs) | tee -a $out
 done
 
-echo openssl aead performance | tee -a $out
+echo \#openssl aead performance | tee -a $out
 for aead in aes-128-gcm aes-256-gcm chacha20-poly1305; do
 	echo $aead,$( openssl_aead $aead 1 ), $( openssl_aead $aead $nprocs ) | tee -a $out
 done
 
 
-echo "brotli performance" | tee -a $out
+echo \#"brotli performance" | tee -a $out
 for q in {4..11}; do
 	echo brotli -$q,$( comp $q 1 -b),$( comp $q $nprocs -b ) | tee -a $out
 done
 
-echo "gzip performance (cloudflare zlib)" | tee -a $out
+echo \#"gzip performance (cloudflare zlib)" | tee -a $out
 for q in {4..9}; do
 	echo gzip -$q,$( comp $q 1 ),$( comp $q $nprocs ) | tee -a $out
 done
 
-echo "Go performance" | tee -a $out
+echo \#"Go performance" | tee -a $out
 go run ./go_benchmarks.go | tee -a $out
